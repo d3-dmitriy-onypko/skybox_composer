@@ -10,6 +10,7 @@ testable=[]
 
 [dependencies]
 image = { version = "0.24.2", default-features = false, features = ["png"] }
+itertools = "0.10.3"
 
 [dev-dependencies]
 assertx = "1.1.7"

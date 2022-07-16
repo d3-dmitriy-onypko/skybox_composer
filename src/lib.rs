@@ -1,6 +1,7 @@
 use std::{env, fs, io::Error, path::PathBuf};
 
 use image::{GenericImage, GenericImageView, ImageBuffer};
+use itertools::Itertools;
 
 const SKYBOX_TILES_AMOUNT: usize = 6;
 
@@ -32,10 +33,17 @@ fn get_file_paths() -> Result<Vec<PathBuf>, Error> {
 }
 
 fn get_skyboxes(paths: Vec<PathBuf>) -> Vec<SkyBoxTiles> {
-    match paths.len() {
-        s if s > SKYBOX_TILES_AMOUNT => panic!("Directory should have only {} tile files for now as merging of single skybox is supported", SKYBOX_TILES_AMOUNT),
-        s if s < SKYBOX_TILES_AMOUNT => panic!("Ensure all skybox tiles are present"),
-        _ => {}
+    if paths.len() < SKYBOX_TILES_AMOUNT {
+        panic!("You should have at least {} to process single skybox", SKYBOX_TILES_AMOUNT)
+    }
+
+    &paths.iter().group_by(|f| {
+        match f.file_name().unwrap().to_str().unwrap().rsplit_once("") {
+            Some((_, last)) => Some(last),
+            None => None
+        }
+    }).into_iter().flatten_ok().map(|(_, path)| match path.file_name().and_then(|f| f.to_str()) {
+        (_, Some
     }
 
     let tiles: Vec<SkyboxTile> = paths
